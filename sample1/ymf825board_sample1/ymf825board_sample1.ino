@@ -1,6 +1,6 @@
 /*
-   RST_N- Pin9
-   SS   - Pin10
+   RST_N- Pin9  -> Pin3
+   SS   - Pin10 -> Pin2
    MOSI - Pin11
    MISO - Pin12
    SCK  - Pin13
@@ -10,13 +10,30 @@
 #define OUTPUT_power 0
 
 void set_ss_pin(int val) {
-    if(val ==HIGH) PORTB |= (4);
-    else PORTB &= ~(4);
+  //ポートB (デジタルピン8から13) 
+  //ポートBの３番目は10
+  //B00000100 は　論理積で4
+  //なのでPORTB |= (4);
+  
+  //PORTDはデジタルピンの０〜７
+  //Pin2はPORTDの３つ目
+  // PORTD | (4);
+  if(val ==HIGH){
+    //PORTB |= (4);
+    PORTD = PORTD | (4);
+  }else{
+    PORTD &= ~(4);
+  } 
 }
 
 void set_rst_pin(int val) {
-    if(val ==HIGH) PORTB |= (2);
-    else PORTB &= ~(2);
+
+    //PORTDはデジタルピンの０〜７
+    //Pin2はPORTDの4つ目
+    //B00001000 は　論理積で8
+    // PORTD | (8);
+    if(val ==HIGH) PORTD |= (8);
+    else PORTD &= ~(8);
 }
 
 void if_write(char addr,unsigned char* data,char num){
@@ -118,6 +135,7 @@ void keyoff(void){
 
 void setup() {
   // put your setup code here, to run once:
+  pinMode(2,OUTPUT);
   pinMode(9,OUTPUT);
   pinMode(10,OUTPUT);
   set_ss_pin(HIGH);
